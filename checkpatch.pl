@@ -660,7 +660,8 @@ if (open(my $spelling, '<', $spelling_file)) {
 		$spelling_fix{$suspect} = $fix;
 	}
 	close($spelling);
-} else {
+} else 
+{
 	warn "No typos will be found - file '$spelling_file': $!\n";
 }
 
@@ -718,8 +719,9 @@ sub read_words {
 }
 
 my $const_structs = "";
-read_words(\$const_structs, $conststructsfile)
-    or warn "No structs that should be const will be found - file '$conststructsfile': $!\n";
+#Disable const structs check - Ramon
+# read_words(\$const_structs, $conststructsfile)
+#    or warn "No structs that should be const will be found - file '$conststructsfile': $!\n";
 
 my $typeOtherTypedefs = "";
 if (length($typedefsfile)) {
@@ -2939,7 +2941,9 @@ sub process {
 		}
 
 # check for using SPDX license tag at beginning of files
-		if ($realline == $checklicenseline) {
+		#if ($realline == $checklicenseline) 
+		if (0)	#Removed SPDX license check - ramon
+		{
 			if ($rawline =~ /^[ \+]\s*\#\!\s*\//) {
 				$checklicenseline = 2;
 			} elsif ($rawline =~ /^\+/) {
@@ -3463,10 +3467,12 @@ sub process {
 			#print "realcnt<$realcnt> ctx_cnt<$ctx_cnt>\n";
 			#print "pre<$pre_ctx>\nline<$line>\nctx<$ctx>\nnext<$lines[$ctx_ln - 1]>\n";
 
-			if ($ctx !~ /{\s*/ && defined($lines[$ctx_ln - 1]) && $lines[$ctx_ln - 1] =~ /^\+\s*{/) {
-				ERROR("OPEN_BRACE",
-				      "that open brace { should be on the previous line\n" .
-					"$here\n$ctx\n$rawlines[$ctx_ln - 1]\n");
+			if ($ctx !~ /{\s*/ && defined($lines[$ctx_ln - 1]) && $lines[$ctx_ln - 1] =~ /^\+\s*{/) 
+			{
+				#Disable open brace error - ramon
+				#ERROR("OPEN_BRACE",
+				 #     "that open brace { should be on the previous line\n" .
+				#	"$here\n$ctx\n$rawlines[$ctx_ln - 1]\n");
 			}
 			if ($level == 0 && $pre_ctx !~ /}\s*while\s*\($/ &&
 			    $ctx =~ /\)\s*\;\s*$/ &&
@@ -3656,23 +3662,24 @@ sub process {
 			}
 			next;
 		}
-
+#disable check - ramon
 # check for initialisation to aggregates open brace on the next line
-		if ($line =~ /^.\s*{/ &&
-		    $prevline =~ /(?:^|[^=])=\s*$/) {
-			if (ERROR("OPEN_BRACE",
-				  "that open brace { should be on the previous line\n" . $hereprev) &&
-			    $fix && $prevline =~ /^\+/ && $line =~ /^\+/) {
-				fix_delete_line($fixlinenr - 1, $prevrawline);
-				fix_delete_line($fixlinenr, $rawline);
-				my $fixedline = $prevrawline;
-				$fixedline =~ s/\s*=\s*$/ = {/;
-				fix_insert_line($fixlinenr, $fixedline);
-				$fixedline = $line;
-				$fixedline =~ s/^(.\s*)\{\s*/$1/;
-				fix_insert_line($fixlinenr, $fixedline);
-			}
-		}
+#		if ($line =~ /^.\s*{/ &&
+#		    $prevline =~ /(?:^|[^=])=\s*$/) {
+#			if (ERROR("OPEN_BRACE",
+#				  "that open brace { should be on the previous line\n" . $hereprev) &&
+#			    $fix && $prevline =~ /^\+/ && $line =~ /^\+/) {
+#				fix_delete_line($fixlinenr - 1, $prevrawline);
+#				fix_delete_line($fixlinenr, $rawline);
+#				my $fixedline = $prevrawline;
+#				$fixedline =~ s/\s*=\s*$/ = {/;
+#				fix_insert_line($fixlinenr, $fixedline);
+#				$fixedline = $line;
+#				$fixedline =~ s/^(.\s*)\{\s*/$1/;
+#				fix_insert_line($fixlinenr, $fixedline);
+#			}
+#		}
+#
 
 #
 # Checks which are anchored on the added line.
@@ -3810,6 +3817,7 @@ sub process {
 				$herecurr);
                }
 
+
 # check for sizeof(foo)/sizeof(foo[0]) that could be ARRAY_SIZE(foo)
 		if ($line =~ m@\bsizeof\s*\(\s*($Lval)\s*\)@) {
 			my $array = $1;
@@ -3834,14 +3842,15 @@ sub process {
 
 # check for new typedefs, only function parameters and sparse annotations
 # make sense.
-		if ($line =~ /\btypedef\s/ &&
-		    $line !~ /\btypedef\s+$Type\s*\(\s*\*?$Ident\s*\)\s*\(/ &&
-		    $line !~ /\btypedef\s+$Type\s+$Ident\s*\(/ &&
-		    $line !~ /\b$typeTypedefs\b/ &&
-		    $line !~ /\b__bitwise\b/) {
-			WARN("NEW_TYPEDEFS",
-			     "do not add new typedefs\n" . $herecurr);
-		}
+#typedef check commented out - ramon
+		#if ($line =~ /\btypedef\s/ &&
+		 #   $line !~ /\btypedef\s+$Type\s*\(\s*\*?$Ident\s*\)\s*\(/ &&
+		  #  $line !~ /\btypedef\s+$Type\s+$Ident\s*\(/ &&
+		   # $line !~ /\b$typeTypedefs\b/ &&
+		    #$line !~ /\b__bitwise\b/) {
+			#WARN("NEW_TYPEDEFS",
+			 #    "do not add new typedefs\n" . $herecurr);
+		#}
 
 # * goes on variable not on type
 		# (char*[ const])
@@ -3983,23 +3992,24 @@ sub process {
 			}
 		}
 
+#disable open brace check for enum union and struct - ramon
 # open braces for enum, union and struct go on the same line.
-		if ($line =~ /^.\s*{/ &&
-		    $prevline =~ /^.\s*(?:typedef\s+)?(enum|union|struct)(?:\s+$Ident)?\s*$/) {
-			if (ERROR("OPEN_BRACE",
-				  "open brace '{' following $1 go on the same line\n" . $hereprev) &&
-			    $fix && $prevline =~ /^\+/ && $line =~ /^\+/) {
-				fix_delete_line($fixlinenr - 1, $prevrawline);
-				fix_delete_line($fixlinenr, $rawline);
-				my $fixedline = rtrim($prevrawline) . " {";
-				fix_insert_line($fixlinenr, $fixedline);
-				$fixedline = $rawline;
-				$fixedline =~ s/^(.\s*)\{\s*/$1\t/;
-				if ($fixedline !~ /^\+\s*$/) {
-					fix_insert_line($fixlinenr, $fixedline);
-				}
-			}
-		}
+#		if ($line =~ /^.\s*{/ &&
+#		    $prevline =~ /^.\s*(?:typedef\s+)?(enum|union|struct)(?:\s+$Ident)?\s*$/) 
+#		    {
+#			if (ERROR("OPEN_BRACE","open brace '{' following $1 go on the same line\n" . $hereprev) &&
+#			    $fix && $prevline =~ /^\+/ && $line =~ /^\+/) {
+#				fix_delete_line($fixlinenr - 1, $prevrawline);
+#				fix_delete_line($fixlinenr, $rawline);
+#				my $fixedline = rtrim($prevrawline) . " {";
+#				fix_insert_line($fixlinenr, $fixedline);
+#				$fixedline = $rawline;
+#				$fixedline =~ s/^(.\s*)\{\s*/$1\t/;
+#				if ($fixedline !~ /^\+\s*$/) {
+#					fix_insert_line($fixlinenr, $fixedline);
+#				}
+#			}
+#		}
 
 # missing space after union, struct or enum definition
 		if ($line =~ /^.\s*(?:typedef\s+)?(enum|union|struct)(?:\s+$Ident){1,2}[=\{]/) {
@@ -4800,23 +4810,25 @@ sub process {
 
 		# Check for }<nl>else {, these must be at the same
 		# indent level to be relevant to each other.
-		if ($prevline=~/}\s*$/ and $line=~/^.\s*else\s*/ &&
-		    $previndent == $indent) {
-			if (ERROR("ELSE_AFTER_BRACE",
-				  "else should follow close brace '}'\n" . $hereprev) &&
-			    $fix && $prevline =~ /^\+/ && $line =~ /^\+/) {
-				fix_delete_line($fixlinenr - 1, $prevrawline);
-				fix_delete_line($fixlinenr, $rawline);
-				my $fixedline = $prevrawline;
-				$fixedline =~ s/}\s*$//;
-				if ($fixedline !~ /^\+\s*$/) {
-					fix_insert_line($fixlinenr, $fixedline);
-				}
-				$fixedline = $rawline;
-				$fixedline =~ s/^(.\s*)else/$1} else/;
-				fix_insert_line($fixlinenr, $fixedline);
-			}
-		}
+
+#Disable else after brace check - ramon
+#		if ($prevline=~/}\s*$/ and $line=~/^.\s*else\s*/ &&
+#		    $previndent == $indent) {
+#			if (ERROR("ELSE_AFTER_BRACE",
+#				  "else should follow close brace '}'\n" . $hereprev) &&
+#			    $fix && $prevline =~ /^\+/ && $line =~ /^\+/) {
+#				fix_delete_line($fixlinenr - 1, $prevrawline);
+#				fix_delete_line($fixlinenr, $rawline);
+#				my $fixedline = $prevrawline;
+#				$fixedline =~ s/}\s*$//;
+#				if ($fixedline !~ /^\+\s*$/) {
+#					fix_insert_line($fixlinenr, $fixedline);
+#				}
+#				$fixedline = $rawline;
+#				$fixedline =~ s/^(.\s*)else/$1} else/;
+#				fix_insert_line($fixlinenr, $fixedline);
+#			}
+#		}
 
 		if ($prevline=~/}\s*$/ and $line=~/^.\s*while\s*/ &&
 		    $previndent == $indent) {
