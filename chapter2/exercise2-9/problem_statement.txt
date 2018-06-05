@@ -1,0 +1,2 @@
+Explain why x &= (x-1) deletes the rightmost bit in x.
+Use this to write a fast bitcount.
