@@ -7,7 +7,7 @@ solution: exercise.c
 	gcc -std=c11 -Wall -Werror -o solution exercise.c
 
 check:
-	../../checkpatch.pl -terse -file -no-tree exercise.c
+	../checkpatch.pl -terse -file -no-tree exercise.c
 	
 
 clean: 
