@@ -1,0 +1,27 @@
+gcc -std=c11 -Wall -Werror -o solution exercise.c
+exercise.c: In function ‘expand’:
+exercise.c:95:8: error: implicit declaration of function ‘cexpand’ [-Werror=implicit-function-declaration]
+        cexpand(a0,c,s2,&j);
+        ^
+exercise.c:161:6: error: implicit declaration of function ‘nexpand’ [-Werror=implicit-function-declaration]
+      nexpand(num0,num1,s2,&j);
+      ^
+exercise.c:179:16: error: ‘num0’ undeclared (first use in this function)
+     if (num1 > num0)
+                ^
+exercise.c:179:16: note: each undeclared identifier is reported only once for each function it appears in
+exercise.c:41:3: error: enumeration value ‘EXPAND’ not handled in switch [-Werror=switch]
+   switch (state)
+   ^
+exercise.c:40:8: error: unused variable ‘alpha’ [-Werror=unused-variable]
+   bool alpha = isalpha(c);
+        ^
+exercise.c:201:5: error: ‘main’ is normally a non-static function [-Werror=main]
+ int main(void)
+     ^
+exercise.c:236:1: error: expected declaration or statement at end of input
+ }
+ ^
+cc1: all warnings being treated as errors
+Makefile:7: recipe for target 'solution' failed
+make: *** [solution] Error 1
