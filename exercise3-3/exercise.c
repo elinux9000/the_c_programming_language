@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdarg.h>
 
 /*
  * Write a function expand (s1, s2) that expands shorthand nota-
@@ -13,6 +14,8 @@
  */
 
 #define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(*arr))
+const bool debug = false;
+#define dbg_printf(fmt, ...) do { if (debug) printf(fmt,__VA_ARGS__);} while(0)
 typedef struct
 {
 	char *s;
@@ -23,6 +26,8 @@ typedef enum
 	INIT, A0, HYPHEN, M0, N0, M1, HYPHEN_NUM
 
 } state_t;
+
+char *state_name[] = {"INIT","A0","HYPHEN","M0","N0","M1","HYPHEN_NUM"};
 
 void cexpand(char start, char end, char *s, size_t *j)
 {
@@ -52,15 +57,14 @@ void expand(char *s1, char *s2)
 	char a0;
 	bool m0, m1;
 	char n0;
-	bool last_char;
+
+	dbg_printf("Expanding %s\n",s1);
 
 	for (size_t i=0; i < len; i++)
 	{
 		char c = s1[i];
-		if (i == len-1)
-			last_char = true;
-		else
-			last_char = false;
+		s2[j++]=c;
+		dbg_printf("state=%s c=%c \n",state_name[state],c);
 		switch (state)
 		{
 			case INIT:
@@ -80,8 +84,6 @@ void expand(char *s1, char *s2)
 					m0 = true;
 					state = M0;
 				}
-				if (last_char)
-					s2[j++]=c;
 				break;
 			case A0:
 				if (c == '-')
@@ -91,7 +93,6 @@ void expand(char *s1, char *s2)
 				}
 				else
 				{
-					s2[j++] = a0;
 					if (isdigit(c))
 					{
 						n0 = c;
@@ -102,8 +103,6 @@ void expand(char *s1, char *s2)
 						state = INIT;
 					}
 				}
-				if (last_char)
-					s2[j++]=c;
 				break;
 			case HYPHEN:
 				if (isdigit(c))
@@ -119,12 +118,8 @@ void expand(char *s1, char *s2)
 							&& c > a0 
 							&& c <='z')
 						{
+							j -= 3;
 							cexpand(a0,c,s2,&j);
-						}
-						else
-						{
-							s2[j++] = '-';
-							s2[j++] = c;
 						}
 						state = INIT;
 					}
@@ -134,22 +129,12 @@ void expand(char *s1, char *s2)
 							&& c > a0
 							&& c <= 'Z')
 						{
+							j -= 2;
 							cexpand(a0,c,s2,&j);
 
 						}
-						else
-						{
-							s2[j++] = '-';
-							s2[j++] = c;
-						}
 						state = INIT;
 					}
-				}
-				if (last_char)
-				{
-					s2[j++] = '-';
-					s2[j++] = c;
-
 				}
 				break;
 			case M0:
@@ -160,19 +145,12 @@ void expand(char *s1, char *s2)
 			}
 			else if (isalpha(c))
 			{
-				s2[j++] = '-';
 				a0 = c;
 				state = A0;
 			}
 			else
 			{
-				s2[j++] = '-';
-				s2[j++] = c;
 				state = INIT;
-			}
-			if (last_char)
-			{
-				s2[j++] = c;
 			}
 			break;
 			case N0:
@@ -182,10 +160,6 @@ void expand(char *s1, char *s2)
 			}
 			else
 			{
-				if (m0)
-					s2[j++] = '-';
-				s2[j++] = n0;
-				s2[j++] = c;
 				state = INIT;
 			}
 			break;
@@ -199,19 +173,14 @@ void expand(char *s1, char *s2)
 			{
 				int num0  = n0 - '0';
 				if (m0)
-					n0 = -n0;
+					num0 = -num0;
 				int num1 = c - '0';
 				if (num1 > num0)
 				{
-					nexpand(num0,num1,s2,&j);
-				}
-				else
-				{
+					j -= 3;
 					if (m0)
-						s2[j++]='-';
-					s2[j++] = n0;
-					s2[j++] = '-';
-					s2[j++] = c;
+						j--;
+					nexpand(num0,num1,s2,&j);
 				}
 				state = INIT;
 			}
@@ -219,20 +188,16 @@ void expand(char *s1, char *s2)
 			case M1:
 			if (isdigit(c) )
 			{
+				int num0 = n0 - '0';
+				if (m0)
+					num0 = -num0;
 				int num1 = c - '0';
 				num1 = -num1;
-				if (num1 > n0)
+				dbg_printf("num0=%d num1=%d\n",num0,num1);
+				if (num1 > num0)
 				{
-					nexpand(n0,num1,s2,&j);
-				}
-				else
-				{
-					if (m0)
-						s2[j++]='-';
-					s2[j++] = n0;
-					s2[j++] = '-';
-					s2[j++] = '-';
-					s2[j++] = c;
+					j -= 5;
+					nexpand(num0,num1,s2,&j);
 				}
 				state = INIT;
 			}
@@ -248,7 +213,7 @@ int main(void)
 		"a-d0-5", "abcd012345",
 		"-a-d-a", "-abcd-a",
 		"-a-D-c-e-", "-a-D-cde-",
-		"a--d", "abcd",
+		"a--d", "a--d",
 		"8-0", "8-0",
 		"-8--6", "-8-7-6",
 		"-2-1", "-2-101",
