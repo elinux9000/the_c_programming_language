@@ -72,3 +72,5 @@ map <F12> <C-]>
 
 "autocomplete braces
 inoremap { {<CR>}<Esc>ko
+
+set nobackup
