@@ -48,7 +48,7 @@ void itob(int n, char s[], int b)
 
 	if (!s)
 	{
-		sprintf("s is null\n");
+		printf("s is null\n");
 		return;
 	}
 	if (b < 1 || b > 36)
@@ -88,6 +88,10 @@ int main(void)
 		{9, 8, "11"},
 	};
 	char s[1024];
+
+	char *t=NULL;
+	printf("strlen(t)=%lu\n",strlen(t));
+	exit(1);
 
 	for (int i = 0; i < ARRAY_SIZE(test_data); i++)
 	{
