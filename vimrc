@@ -70,4 +70,5 @@ map <S-F7> :make clean all<CR>
 " goto definition with F12
 map <F12> <C-]>
 
-set nobackup
+"autocomplete braces
+inoremap { {<CR>}<Esc>ko
