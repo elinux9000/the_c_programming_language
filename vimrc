@@ -73,4 +73,7 @@ map <F12> <C-]>
 "autocomplete braces
 inoremap { {<CR>}<Esc>ko
 
+"autocomplete parentheses
+inoremap ( ( )<Esc>hi
+
 set nobackup
