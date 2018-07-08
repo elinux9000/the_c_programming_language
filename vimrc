@@ -77,3 +77,4 @@ inoremap { {<CR>}<Esc>ko
 inoremap ( ( )<Esc>hi
 
 set nobackup
+set noswapfile
