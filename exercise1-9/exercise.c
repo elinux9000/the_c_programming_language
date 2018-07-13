@@ -26,19 +26,16 @@ const bool debug;
 int main(void)
 {
 	int c;
+	int previous = EOF;
 
-	printf("Enter characters\n");
+	printf("This program will remove sequential spaces from the input\n");
 	while ((c = getchar()) != EOF && c != EOT)
 	{
-		printf("%c", c);
-		if (c == ' ')
+		if (c != ' ' || previous != ' ')
 		{
-			while ((c = getchar()) == ' ')
-			{
-
-			};
-			printf("%c", c);
+			putchar(c);
 		}
+		previous = c;
 	}
 	return EXIT_SUCCESS;
 }

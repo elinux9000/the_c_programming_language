@@ -74,7 +74,7 @@ map <F12> <C-]>
 inoremap { {<CR>}<Esc>ko
 
 "autocomplete parentheses
-inoremap ( ( )<Esc>hi
+inoremap ( ()<Esc>hi
 
 set nobackup
 set noswapfile
