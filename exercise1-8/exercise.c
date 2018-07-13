@@ -13,12 +13,14 @@
  * Exercise 1-8
  * Write a program to count blanks, tabs, and newlines
  */
-#define dbg_printf(...) do { if (debug) printf(__VA_ARGS__);} while(0)
-#define EOT 4	/* the terminal in non canonical mode sends 4 when ctrl-d 
- 		 * is pressed
-		 */
+#define dbg_printf(...) do { if (debug) printf(__VA_ARGS__); } while (0)
 
-const bool debug = false;
+/* the terminal in non canonical mode sends 4 when ctrl-d
+ * is pressed
+ */
+#define EOT 4
+const bool debug;
+
 int main(void)
 {
 	int c;
