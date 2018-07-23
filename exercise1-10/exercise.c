@@ -10,9 +10,10 @@
 
 
 /*
- * Exercise 1-9
+ * Exercise 1-10
  * Write a program to copy its input to its output, replacing each tab by \t
  * each backspace by \b and each backslash by \\
+ * CTRL-H sends the backspace character in gnome-terminal
  */
 #define dbg_printf(...) do { if (debug) printf(__VA_ARGS__); } while (0)
 
@@ -21,16 +22,15 @@
  */
 #define EOT 4
 
-const bool debug = true;
+const bool debug;
 
 int main(void)
 {
 	int c;
-	char d = '\b';
 
-	printf("d = %d\n", d);
+	printf("This program will show tabs, backspaces and backslashes.\n");
+	printf("CTRL-h sends the backspace character in gnome-terminal\n");
 
-	printf("This program will show tabs, backspaces and backslashes\n");
 	while ((c = getchar()) != EOF && c != EOT)
 	{
 		dbg_printf(" c=%d\n", c);
