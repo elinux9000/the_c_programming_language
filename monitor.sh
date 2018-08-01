@@ -17,9 +17,7 @@ make check && make && ./solution
 FILE=$DIR/exercise.c
 while [ 1 ]
 do
-	while inotifywait -e modify exercise.c ;
-		do : ; 
-	done
+	inotifywait -e modify exercise.c 
 	clear
 	make check && make && ./solution
 	echo 
